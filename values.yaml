@@ -1,0 +1,9 @@
+---
+images:
+  bash: registry.access.redhat.com/ubi8-minimal:latest
+  openshift-cli: registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8
+
+annotations:
+  tekton.dev/pipelines.minVersion: "0.17.0"
+  tekton.dev/tags: cli
+  tekton.dev/displayName: "openshift client"

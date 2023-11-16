@@ -1,0 +1,5 @@
+apiVersion: v2
+name: task-oc
+version: 0.0.1
+description: TODO...
+type: application
