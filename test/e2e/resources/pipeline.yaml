@@ -1,0 +1,38 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  labels:
+    name: task-openshift-client
+  name: task-openshift-client
+spec:
+  workspaces:
+    - name: manifest-dir
+      optional: true
+    - name: kubeconfig-dir
+      optional: true
+
+  params:
+    - name: SCRIPT
+      type: string
+      default: "oc help"
+    - name: VERSION
+      type: string
+      default: "latest"
+
+  tasks:
+    - name: task-openshift-client
+      taskRef:
+        name: task-openshift-client
+      workspaces:
+        - name: manifest-dir
+          workspace: manifest-dir
+        - name: kubeconfig-dir
+          workspace: kubeconfig-dir
+      params:
+        - name: SCRIPT
+          value: "$(params.SCRIPT)"
+        - name: VERSION
+          value: "$(params.VERSION)"
+        
+    
