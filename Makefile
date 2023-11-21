@@ -8,6 +8,7 @@ BATS_FLAGS ?= --print-output-on-failure --show-output-of-passing-tests --verbose
 
 # path to the bats test files, overwite the variables below to tweak the test scope
 E2E_TESTS ?= ./test/e2e/*.bats
+E2E_OPENSHIFT_PARAMS_SCRIPT ?= "oc version"
 
 # generic arguments employed on most of the targets
 ARGS ?=

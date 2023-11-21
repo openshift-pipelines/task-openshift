@@ -27,7 +27,7 @@ spec:
       optional: true
       description: >-
         The workspace which contains the the kubeconfig file if in case we want to run the oc command on another cluster.
-  
+
   params:
     - name: SCRIPT
       description: The OpenShift CLI arguments to run
