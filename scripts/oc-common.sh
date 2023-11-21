@@ -18,8 +18,3 @@ exported_or_fail \
     WORKSPACES_KUBECONFIG_DIR_PATH \
     PARAMS_SCRIPT \
     PARAMS_VERSION
-
-
-
-
-

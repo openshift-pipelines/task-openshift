@@ -15,10 +15,3 @@ export KUBECONFIG=$(workspaces.kubeconfig_dir.path)/kubeconfig
 
 "${params.SCRIPT}"
 
-
-
-
-
-
-
-

@@ -28,7 +28,3 @@ function exported_or_fail() {
     return 0
 }
 
-
-
-
-

@@ -54,7 +54,7 @@ spec:
 {{- include "load_scripts" ( list . "oc-" ) | nindent 4 }}
 
     - name: oc
-      image: {{ .Values.images.openshift-cli }}
+      image: {{ .Values.images.openshiftCli }}
       env:
         - name: HOME
           value: /tekton/home
@@ -66,12 +66,8 @@ spec:
       volumeMounts:
         - name: scripts-dir
           mountPath: /scripts
-  
+
   volumes:
     - name: scripts-dir
       emptyDir: {}
-
-
-
-
 
