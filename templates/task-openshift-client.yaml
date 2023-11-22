@@ -43,10 +43,10 @@ spec:
 {{- $variables := list
       "params.SCRIPT"
       "params.VERSION"
+      "workspaces.manifest_dir.bound"
       "workspaces.manifest_dir.path"
-      "workspaces.manifest_dir.volume"
+      "workspaces.kubeconfig_dir.bound"
       "workspaces.kubeconfig_dir.path"
-      "workspaces.kubeconfig_dir.volume"
 }}
 {{- include "environment" ( list $variables ) | nindent 6 }}
 

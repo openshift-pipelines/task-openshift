@@ -7,20 +7,28 @@ source ./test/helper/helper.sh
 # Testing the openshift task,
 @test "[e2e] openshift task" {
     [ -n "${E2E_OPENSHIFT_PARAMS_SCRIPT}" ]
+    
+    run kubectl delete taskrun --all
+    assert_success
+
+    run kubectl delete secret regcred || true
+    assert_success
+    run kubectl create secret generic regcred \
+        --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+        --type=kubernetes.io/dockerconfigjson
+    assert_success
+    run kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
+    assert_success
 
     run tkn task start openshift-client \
         --param="SCRIPT=${E2E_OPENSHIFT_PARAMS_SCRIPT}" \
-	--use-param-defaults \
-	--skip-optional-workspace \
-        --showlog
+	    --use-param-defaults \
+	    --skip-optional-workspace \
+        --showlog >&3
     assert_success
 
     # waiting a few seconds before asserting results
-    sleep 30
-
-    kubectl get pods -o yaml
-    kubectl get tasks -o yaml
-    kubectl get taskruns -o yaml
+    sleep 15
     
     # assering the taskrun status, making sure all steps have been successful
     declare tmpl_file="${BASE_DIR}/go-template.tpl"
@@ -37,7 +45,8 @@ source ./test/helper/helper.sh
     {{- printf "%s=%s\n" .name .value -}}
 {{- end -}}
 EOS
-    tkn taskrun describe --last --output=go-template-file --template=${tmpl_file}
+
+    run tkn taskrun describe --last --output=go-template-file --template=${tmpl_file}
     assert_success
-    assert_output "Succeeded"
+    assert_output "All Steps have completed executing"
 }

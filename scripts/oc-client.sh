@@ -6,12 +6,12 @@ set -eu -o pipefail
 source "$(dirname ${BASH_SOURCE[0]})/common.sh"
 source "$(dirname ${BASH_SOURCE[0]})/oc-common.sh"
 
-[[ "$(workspaces.manifest_dir.bound)" == "true" ]] && \
-      cd $(workspaces.manifest_dir.path)
+[[ "${WORKSPACES_MANIFEST_DIR_BOUND}" == "true" ]] && \
+      cd ${WORKSPACES_MANIFEST_DIR_PATH}
 
-[[ "$(workspaces.kubeconfig_dir.bound)" == "true" ]] && \
-[[ -f $(workspaces.kubeconfig_dir.path)/kubeconfig ]] && \
-export KUBECONFIG=$(workspaces.kubeconfig_dir.path)/kubeconfig
+[[ "${WORKSPACES_KUBECONFIG_DIR_BOUND}" == "true" ]] && \
+[[ -f ${WORKSPACES_KUBECONFIG_DIR_PATH}/kubeconfig ]] && \
+export KUBECONFIG=${WORKSPACES_KUBECONFIG_DIR_PATH}/kubeconfig
 
-"${params.SCRIPT}"
+${PARAMS_SCRIPT}
 
