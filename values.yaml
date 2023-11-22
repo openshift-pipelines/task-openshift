@@ -1,7 +1,7 @@
 ---
 images:
   bash: registry.access.redhat.com/ubi8-minimal:latest
-  openshiftCli: registry.access.redhat.com/openshift3/ose-cli:latest
+  openshiftCli: registry.redhat.io/openshift4/ose-cli@sha256:3d5b31cc3fbf878015e5c3ed1d48379d74b15b77a1a823024a7a2b7cd5e2e86d
 
 annotations:
   tekton.dev/pipelines.minVersion: "0.17.0"
