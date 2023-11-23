@@ -7,9 +7,9 @@ metadata:
   name: task-openshift-client
 spec:
   workspaces:
-    - name: manifest-dir
+    - name: manifest_dir
       optional: true
-    - name: kubeconfig-dir
+    - name: kubeconfig_dir
       optional: true
 
   params:
@@ -25,10 +25,10 @@ spec:
       taskRef:
         name: task-openshift-client
       workspaces:
-        - name: manifest-dir
-          workspace: manifest-dir
-        - name: kubeconfig-dir
-          workspace: kubeconfig-dir
+        - name: manifest_dir
+          workspace: manifest_dir
+        - name: kubeconfig_dir
+          workspace: kubeconfig_dir
       params:
         - name: SCRIPT
           value: "$(params.SCRIPT)"
