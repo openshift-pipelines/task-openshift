@@ -41,6 +41,19 @@ jobs:
         with:
           pipeline_version: v0.53.2
 
+      # Install Catlin linting tool
+      - name: Install Catlin linting tool 
+        run: |
+          git clone https://github.com/tektoncd/catlin
+          cd catlin
+          make
+          sudo cp bin/catlin /usr/local/bin
+          catlin --help
+
+      # run Catlin linting
+      - name: Run Catlin linting
+        run: make catlin
+
       # running end-to-end test target
       - name: test-e2e
         run: make test-e2e

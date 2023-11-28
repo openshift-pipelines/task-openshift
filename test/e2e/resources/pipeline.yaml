@@ -23,7 +23,7 @@ spec:
   tasks:
     - name: task-openshift-client
       taskRef:
-        name: task-openshift-client
+        name: openshift-client
       workspaces:
         - name: manifest_dir
           workspace: manifest_dir
