@@ -12,6 +12,29 @@ on:
       - main
 
 jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # Install Catlin linting tool
+      - name: Install Catlin linting tool 
+        run: |
+          git clone https://github.com/tektoncd/catlin
+          cd catlin
+          make bin/catlin
+          sudo cp bin/catlin /usr/local/bin
+          catlin --help
+
+      # run Catlin linting
+      - name: Run Catlin linting
+        run: |
+          helm template task-oc . > task-oc.yml
+          catlin validate task-oc.yml
+
   test-e2e:
     strategy:
       fail-fast: false # Keep running if one leg fails.
@@ -49,19 +72,6 @@ jobs:
       - uses: openshift-pipelines/setup-tektoncd@v1
         with:
           pipeline_version: ${{ matrix.pipeline-version }}
-
-      # Install Catlin linting tool
-      - name: Install Catlin linting tool 
-        run: |
-          git clone https://github.com/tektoncd/catlin
-          cd catlin
-          make
-          sudo cp bin/catlin /usr/local/bin
-          catlin --help
-
-      # run Catlin linting
-      - name: Run Catlin linting
-        run: make catlin
 
       # running end-to-end test target
       - name: test-e2e
