@@ -10,6 +10,8 @@ BATS_FLAGS ?= --print-output-on-failure --show-output-of-passing-tests --verbose
 E2E_TESTS ?= ./test/e2e/*.bats
 E2E_OPENSHIFT_PARAMS_SCRIPT ?= oc version
 
+E2E_TKN_PARAMS_SCRIPT ?= tkn version
+
 # generic arguments employed on most of the targets
 ARGS ?=
 
@@ -47,9 +49,14 @@ test-e2e: install
 .PHONY: prepare-e2e-openshift
 prepare-e2e-openshift:
 	./hack/install-osp.sh $(OSP_VERSION)
+
 .PHONY: test-e2e-openshift
 test-e2e-openshift: prepare-e2e-openshift
 test-e2e-openshift: test-e2e
+
+.PHONY: test-e2e-tkn
+test-e2e-tkn: prepare-e2e-openshift
+test-e2e-tkn: test-e2e
 
 # act runs the github actions workflows, so by default only running the test workflow (integration
 # and end-to-end) to avoid running the release workflow accidently
