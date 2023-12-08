@@ -28,8 +28,18 @@ jobs:
       - name: Install linting tools
         run: |
           set -Eeu
-          GOBIN=/usr/local/bin/ go install github.com/tektoncd/catlin/cmd/catlin@v0.0.0-20231127152633-4e55b357a307
-          GOBIN=/usr/local/bin/ go install github.com/openshift-pipelines/tektoncd-catalog/cmd/catalog-cd@latest
+          git clone --depth 1 https://github.com/tektoncd/catlin.git
+          cd catlin/cmd/catlin
+          go build -o catlin
+          sudo mv catlin /usr/local/bin/
+          cd ../..
+
+          git clone --depth 1 https://github.com/openshift-pipelines/tektoncd-catalog.git
+          cd tektoncd-catalog/cmd/catalog-cd
+          go build -o catalog-cd
+          sudo mv catalog-cd /usr/local/bin/
+          cd ../..
+
           catlin --help
           catalog-cd --help
 
