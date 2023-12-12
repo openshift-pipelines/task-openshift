@@ -28,10 +28,8 @@ jobs:
       - name: Install linting tools
         run: |
           set -Eeu
+          GOBIN=/usr/local/bin/ GO111MODULE=on go install github.com/tektoncd/catlin/cmd/catlin@latest
           GOBIN=/usr/local/bin/ go install github.com/openshift-pipelines/tektoncd-catalog/cmd/catalog-cd@latest
-          curl -L -o catlin https://github.com/tektoncd/pipeline/releases/download/v0.0.0-20231127152633-4e55b357a307/catlin_linux-amd64
-          chmod +x catlin
-          mv catlin $GOBIN/
 
           catlin --help
           catalog-cd --help
