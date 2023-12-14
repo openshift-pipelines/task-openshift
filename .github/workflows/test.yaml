@@ -50,7 +50,7 @@ jobs:
           helm template task-oc . > task-oc.yaml
           catalog-cd lint task-oc.yaml
           helm template task-tkn . > task-tkn.yaml
-          catlin validate task-tkn.yaml || true
+          catalog-cd lint task-tkn.yaml 
 
   test-e2e:
     strategy:
