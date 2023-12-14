@@ -27,13 +27,11 @@ jobs:
       # Install Catlin linting tool
       - name: Install linting tools
         run: |
-          set -Eeu
-          GOBIN=/usr/local/bin/ GO111MODULE=on go install github.com/tektoncd/catlin/cmd/catlin@latest
-          GOBIN=/usr/local/bin/ go install github.com/openshift-pipelines/tektoncd-catalog/cmd/catalog-cd@latest
-
+          git clone https://github.com/tektoncd/catlin
+          cd catlin
+          make bin/catlin
+          sudo cp bin/catlin /usr/local/bin
           catlin --help
-          catalog-cd --help
-
 
       # run Catlin linting
       - name: Run Catlin linting
@@ -42,12 +40,17 @@ jobs:
           helm template task-oc . > task-oc.yaml
           cat task-oc.yaml
           catlin validate task-oc.yaml || true
+          helm template task-tkn . > task-tkn.yaml
+          cat task-tkn.yaml
+          catlin validate task-tkn.yaml || true
 
       - name: Run catalog-cd lint
         run: |
           set -Eeu
           helm template task-oc . > task-oc.yaml
           catalog-cd lint task-oc.yaml
+          helm template task-tkn . > task-tkn.yaml
+          catlin validate task-tkn.yaml || true
 
   test-e2e:
     strategy:
