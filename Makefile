@@ -1,6 +1,14 @@
+SHELL := /usr/bin/env bash
+BIN = $(CURDIR)/.bin
+
+OSP_VERSION ?= latest
+
 # using the chart name and version from chart's metadata
 CHART_NAME ?= $(shell awk '/^name:/ { print $$2 }' Chart.yaml)
 CHART_VESION ?= $(shell awk '/^version:/ { print $$2 }' Chart.yaml)
+RELEASE_VERSION = v$(CHART_VERSION)
+
+CATALOGCD_VERSION = v0.1.0
 
 # bats entry point and default flags
 BATS_CORE = ./test/.bats/bats-core/bin/bats
@@ -19,10 +27,48 @@ ARGS ?=
 # on all targets
 .EXPORT_ALL_VARIABLES:
 
+$(BIN):
+	@mkdir -p $@
+
+CATALOGCD = $(or ${CATALOGCD_BIN},${CATALOGCD_BIN},$(BIN)/catalog-cd)
+$(BIN)/catalog-cd: $(BIN)
+	curl -fsL https://github.com/openshift-pipelines/catalog-cd/releases/download/v0.1.0/catalog-cd_0.1.0_linux_x86_64.tar.gz | tar xzf - -C $(BIN) catalog-cd
+
 # renders the task resource file printing it out on the standard output, you can redirect the output
 # of this target to a `kubectl apply -f -`, for istance
 helm-template:
 	helm template $(ARGS) $(CHART_NAME) .
+
+# renders the task templates and copies documentation into the ${RELEASE_DIR}
+prepare-release:
+	mkdir -p $(RELEASE_DIR) || true
+	hack/release.sh $(RELEASE_DIR)
+
+# runs "catalog-cd release" to create the release payload based on the Tekton resources
+# prepared by the previous step
+release: $(CATALOGCD) prepare-release
+	mkdir -p $(RELEASE_DIR) || true
+	pushd ${RELEASE_DIR} && \
+		$(CATALOGCD) release \
+			--output release \
+			--version $(CHART_VERSION) \
+			tasks/* \
+		; \
+	popd
+
+# tags the repository with the RELEASE_VERSION and pushes to "origin"
+git-tag-release-version:
+	if ! git rev-list "${RELEASE_VERSION}".. >/dev/null; then \
+		git tag "$(RELEASE_VERSION)" && \
+			git push origin --tags; \
+	fi
+
+# rolls out the current Chart version as the repository release version, uploads the release
+# payload prepared to GitHub (using gh)
+github-release: git-tag-release-version release
+	gh release create $(RELEASE_VERSION) --generate-notes && \
+	gh release upload $(RELEASE_VERSION) $(RELEASE_DIR)/release/catalog.yaml && \
+	gh release upload $(RELEASE_VERSION) $(RELEASE_DIR)/release/resources.tar.gz
 
 # renders and installs the task in the current namespace
 install:
