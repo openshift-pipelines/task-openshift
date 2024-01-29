@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: kn
+  labels:
+    app.kubernetes.io/version: {{ .Chart.Version }}
+{{- if .Values.annotations }}
+  annotations:
+  {{- .Values.annotations | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  description: >-
+    This Task performs operations on Knative resources
+    (services, revisions, routes) using kn CLI
+
+  params:
+    - name: ARGS
+      type: array
+      description: kn CLI arguments to run
+      default:
+        - "help"
+
+  steps:
+    - name: kn
+      env:
+        - name: HOME
+          value: /tekton/home
+      image: {{ .Values.images.kn }}
+      command: ["/ko-app/kn"]
+      args: ["$(params.ARGS)"]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532

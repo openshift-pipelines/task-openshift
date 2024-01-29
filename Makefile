@@ -20,6 +20,8 @@ E2E_OPENSHIFT_PARAMS_SCRIPT ?= oc version
 
 E2E_TKN_PARAMS_SCRIPT ?= tkn version
 
+E2E_KN_PARAMS_ARGS ?= help
+
 # generic arguments employed on most of the targets
 ARGS ?=
 

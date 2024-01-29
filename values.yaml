@@ -3,6 +3,9 @@ images:
   bash: registry.access.redhat.com/ubi8-minimal:latest
   openshiftCli: registry.redhat.io/openshift4/ose-cli@sha256:3d5b31cc3fbf878015e5c3ed1d48379d74b15b77a1a823024a7a2b7cd5e2e86d
   tkn: registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:72394dfaed68c4b6b490c3c971fb1d9f0139f8656f6672b55b8e02ea98d1298d
+  kn: gcr.io/knative-releases/knative.dev/client/cmd/kn:latest
+  # kn: registry.redhat.io/openshift-serverless-1/client-kn-rhel8
+  # kn: registry.redhat.io/openshift-serverless-1/knative-rhel8-operator
 
 annotations:
   tekton.dev/pipelines.minVersion: "0.17.0"
