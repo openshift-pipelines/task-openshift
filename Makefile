@@ -22,6 +22,9 @@ E2E_TKN_PARAMS_SCRIPT ?= tkn version
 
 E2E_KN_PARAMS_ARGS ?= help
 
+E2E_KN_APPLY_PARAMS_SERVICE ?= hello
+E2E_KN_APPLY_PARAMS_IMAGE ?= gcr.io/knative-samples/helloworld-go:latest
+
 # generic arguments employed on most of the targets
 ARGS ?=
 

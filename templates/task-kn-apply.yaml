@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: kn-apply
+  labels:
+    app.kubernetes.io/version: {{ .Chart.Version }}
+{{- if .Values.annotations }}
+  annotations:
+  {{- .Values.annotations | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  description: >-
+    This task deploys a given image to a Knative Service.
+    It uses `kn service apply` to create or update given knative service.
+  
+  params:
+    - name: SERVICE
+      description: Knative service name
+    - name: IMAGE
+      description: Image to deploy
+
+  steps:
+    - name: kn
+      env:
+        - name: HOME
+          value: /tekton/home
+      image: {{ .Values.images.kn }}
+      command: ["/ko-app/kn"]
+      args:
+        ["service", "apply", "$(params.SERVICE)", "--image", "$(params.IMAGE)"]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
