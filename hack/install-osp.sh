@@ -142,7 +142,7 @@ install_serverless
 
 # wait until serverless operator is created
 echo "Waiting for OpenShift Serverless Operator to be created..."
-timeout 2m bash <<- EOF
+timeout 4m bash <<- EOF
   until oc get deployment knative-openshift -n openshift-operators; do
     sleep 5
   done
