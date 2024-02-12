@@ -55,8 +55,6 @@ EOF
 }
 
 function install_nightly() {
-    oc patch operatorhub.config.openshift.io/cluster -p='{"spec":{"disableAllDefaultSources":true}}' --type=merge
-    sleep 2
     # Add a custom catalog-source
     cat <<EOF | oc apply -f-
 apiVersion: operators.coreos.com/v1alpha1
