@@ -39,6 +39,21 @@ spec:
 EOF
 }
 
+function install_serverless() {
+  cat <<-EOF | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: serverless-operator
+  namespace: openshift-operators
+spec:
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  name: serverless-operator
+  channel: stable
+EOF
+}
+
 function install_nightly() {
     oc patch operatorhub.config.openshift.io/cluster -p='{"spec":{"disableAllDefaultSources":true}}' --type=merge
     sleep 2
@@ -71,6 +86,16 @@ spec:
   name: openshift-pipelines-operator-rh
   source: custom-osp-nightly
   sourceNamespace: openshift-marketplace
+EOF
+}
+
+function setup_knative_serving(){
+  cat <<EOF | oc apply -f-
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeServing
+metadata:
+    name: knative-serving
+    namespace: knative-serving
 EOF
 }
 
@@ -113,9 +138,35 @@ EOF
 rollout_status "openshift-pipelines" "tekton-pipelines-controller"
 rollout_status "openshift-pipelines" "tekton-pipelines-webhook"
 
+install_serverless
+
+# wait until serverless operator is created
+echo "Waiting for OpenShift Serverless Operator to be created..."
+timeout 2m bash <<- EOF
+  until oc get deployment knative-openshift -n openshift-operators; do
+    sleep 5
+  done
+EOF
+oc rollout status -n openshift-operators deployment/knative-openshift --timeout 10m
+
+setup_knative_serving
+
+timeout 2m bash <<-EOF
+  until oc get knativeserving.operator.knative.dev/knative-serving -n knative-serving; do
+    sleep 5
+  done
+EOF
+
 oc get -n openshift-pipelines pods
 tkn version
 
 # Make sure we are on the default project
-oc new-project e2e-test
+if ! oc get project e2e-test &> /dev/null; then
+    echo "Project e2e-test does not exist, creating it..."
+    # If the project doesn't exist, create it
+    oc new-project e2e-test
+else
+    echo "Project e2e-test already exists."
+fi
+
 oc project e2e-test
