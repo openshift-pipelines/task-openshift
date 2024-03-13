@@ -1,0 +1,63 @@
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: opc
+  labels:
+    app.kubernetes.io/version: {{ .Chart.Version }}
+{{- if .Values.annotations }}
+  annotations:
+  {{- .Values.annotations | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  description: >-
+    The opc task makes it easy to work with Tekton resources in OpenShift Pipelines.
+  
+  workspaces:
+    - name: kubeconfig_dir
+      optional: true
+      description: >-
+        An optional workspace that allows you to provide a .kube/config
+        file for opc to access the cluster. The file should be placed at
+        the root of the Workspace with name kubeconfig.
+
+  params:
+    - name: SCRIPT
+      description: opc CLI script to execute
+      type: string
+      default: "opc $@"
+    - name: ARGS
+      type: array
+      description: opc CLI arguments to run
+      default: ["--help"]
+   
+  stepTemplate:
+    env:
+{{- $variables := list
+      "params.SCRIPT"
+      "workspaces.kubeconfig_dir.bound"
+      "workspaces.kubeconfig_dir.path"
+}}
+{{- include "environment" ( list $variables ) | nindent 6 }}
+
+  steps:
+{{- include "load_scripts" ( list . "opc-" ) | nindent 4 }}
+
+    - name: opc
+      image: {{ .Values.images.opc }}
+      env:
+        - name: HOME
+          value: /tekton/home
+      command:
+        - /scripts/opc-client.sh
+      args: ["$(params.ARGS)"]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+      volumeMounts:
+        - name: scripts-dir
+          mountPath: /scripts
+
+  volumes:
+    - name: scripts-dir
+      emptyDir: {}

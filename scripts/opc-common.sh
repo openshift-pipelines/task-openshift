@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+declare -rx PARAMS_SCRIPT="${PARAMS_SCRIPT:-}"
+
+declare -rx WORKSPACES_KUBECONFIG_DIR_PATH="${WORKSPACES_KUBECONFIG_DIR_PATH:-}"
+declare -rx WORKSPACES_KUBECONFIG_DIR_BOUND="${WORKSPACES_KUBECONFIG_DIR_BOUND:-}"
+
+#
+# Asserting Environment
+#
+
+exported_or_fail \
+    WORKSPACES_KUBECONFIG_DIR_BOUND \
+    PARAMS_SCRIPT \
+   

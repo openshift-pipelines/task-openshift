@@ -4,6 +4,7 @@ images:
   openshiftCli: registry.redhat.io/openshift4/ose-cli@sha256:3d5b31cc3fbf878015e5c3ed1d48379d74b15b77a1a823024a7a2b7cd5e2e86d
   tkn: registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:72394dfaed68c4b6b490c3c971fb1d9f0139f8656f6672b55b8e02ea98d1298d
   kn: registry.redhat.io/openshift-serverless-1/client-kn-rhel8:1.9.2-4
+  opc: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/ecosystem-images/opc-ecosystem-images@sha256:97ba3f5cb6d20609de1133ea6e176884f103222b59fa8155190d3b95e7f5f43a    
 
 annotations:
   tekton.dev/pipelines.minVersion: "0.17.0"

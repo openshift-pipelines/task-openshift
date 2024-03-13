@@ -20,6 +20,8 @@ E2E_OPENSHIFT_PARAMS_SCRIPT ?= oc version
 
 E2E_TKN_PARAMS_SCRIPT ?= tkn version
 
+E2E_OPC_PARAMS_SCRIPT ?= opc version
+
 E2E_KN_PARAMS_ARGS ?= help
 
 E2E_KN_APPLY_PARAMS_SERVICE ?= hello
@@ -108,6 +110,10 @@ test-e2e-openshift: test-e2e
 .PHONY: test-e2e-tkn
 test-e2e-tkn: prepare-e2e-openshift
 test-e2e-tkn: test-e2e
+
+.PHONY: test-e2e-opc
+test-e2e-opc: prepare-e2e-openshift
+test-e2e-opc: test-e2e
 
 # act runs the github actions workflows, so by default only running the test workflow (integration
 # and end-to-end) to avoid running the release workflow accidently
