@@ -86,20 +86,21 @@ jobs:
           sudo mv cosign-linux-amd64 /usr/local/bin/cosign
           sudo chmod +x /usr/local/bin/cosign
           sudo apt-get install jq
-          curl -sSL https://github.com/knative/serving/releases/download/knative-v1.13.1/serving-core.yaml \
+          curl -sSL https://github.com/knative/serving/releases/latest/download/serving-core.yaml \
             | grep 'gcr.io/' | awk '{print $2}' | sort | uniq \
             | xargs -n 1 \
               cosign verify -o text \
                 --certificate-identity=signer@knative-releases.iam.gserviceaccount.com \
                 --certificate-oidc-issuer=https://accounts.google.com
-          kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.13.1/serving-crds.yaml
-          kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.13.1/serving-core.yaml
-          kubectl apply -f https://github.com/knative/net-kourier/releases/download/knative-v1.13.0/kourier.yaml
+          kubectl apply -f https://github.com/knative/serving/releases/latest/download/serving-crds.yaml
+          kubectl apply -f https://github.com/knative/serving/releases/latest/download/serving-core.yaml
+          kubectl apply -f https://github.com/knative/net-kourier/releases/latest/download/kourier.yaml
           kubectl patch configmap/config-network \
             --namespace knative-serving \
             --type merge \
             --patch '{"data":{"ingress-class":"kourier.ingress.networking.knative.dev"}}'          
           sleep 60
+          #Adding roles for allowing kn-apply to create service in default namespace
           cat <<EOF | kubectl apply -f -
           apiVersion: rbac.authorization.k8s.io/v1
           kind: Role
@@ -109,7 +110,7 @@ jobs:
           rules:
             - apiGroups: ["serving.knative.dev"]
               resources: ["services"]
-              verbs: ["get", "list", "watch", "create", "patch"]
+              verbs: ["get", "create", "patch"]
           ---
           apiVersion: rbac.authorization.k8s.io/v1
           kind: RoleBinding
@@ -125,6 +126,19 @@ jobs:
             name: knative-serving-role
             apiGroup: rbac.authorization.k8s.io
           EOF
+          kubectl get pods -n knative-serving
+          all_pods=$(kubectl get pods -n "knative-serving" --no-headers=true)
+          while read -r pod; do
+            pod_name=$(echo "$pod" | awk '{print $1}')
+            pod_status=$(echo "$pod" | awk '{print $3}')
+            
+            # Check if the pod status is not "Running"
+            if [ "$pod_status" != "Running" ]; then
+              echo "Pod $pod_name is not running"
+              exit 1
+            fi
+          done <<< "$all_pods"
+          echo "All pods are running"
 
       # running end-to-end test target
       - name: test-e2e
@@ -136,4 +150,3 @@ jobs:
           --type=kubernetes.io/dockerconfigjson
           kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "regcred"}]}'
           make test-e2e
-
