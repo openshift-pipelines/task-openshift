@@ -26,6 +26,8 @@ spec:
         - name: kubeconfig_dir
           workspace: kubeconfig_dir
       params:
+        - name: TKN_IMAGE
+          value: "registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:72394dfaed68c4b6b490c3c971fb1d9f0139f8656f6672b55b8e02ea98d1298d"
         - name: SCRIPT
           value: "$(params.SCRIPT)"
         - name: ARGS

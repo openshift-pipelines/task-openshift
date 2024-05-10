@@ -22,6 +22,9 @@ spec:
         the root of the Workspace with name kubeconfig.
 
   params:
+    - name: TKN_IMAGE
+      description: tkn CLI container image to run this task
+      default: registry.redhat.io/openshift-pipelines/pipelines-cli-tkn-rhel8@sha256:72394dfaed68c4b6b490c3c971fb1d9f0139f8656f6672b55b8e02ea98d1298d
     - name: SCRIPT
       description: tkn CLI script to execute
       type: string
@@ -34,6 +37,7 @@ spec:
   stepTemplate:
     env:
 {{- $variables := list
+      "params.TKN_IMAGE"
       "params.SCRIPT"
       "workspaces.kubeconfig_dir.bound"
       "workspaces.kubeconfig_dir.path"
@@ -44,7 +48,7 @@ spec:
 {{- include "load_scripts" ( list . "tkn-" ) | nindent 4 }}
 
     - name: tkn
-      image: {{ .Values.images.tkn }}
+      image: "$(params.TKN_IMAGE)"
       env:
         - name: HOME
           value: /tekton/home

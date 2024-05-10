@@ -22,6 +22,9 @@ spec:
         the root of the Workspace with name kubeconfig.
 
   params:
+    - name: OPC_IMAGE
+      description: opc CLI container image to run this task
+      default: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/ecosystem-images/opc-ecosystem-images@sha256:97ba3f5cb6d20609de1133ea6e176884f103222b59fa8155190d3b95e7f5f43a    
     - name: SCRIPT
       description: opc CLI script to execute
       type: string
@@ -34,6 +37,7 @@ spec:
   stepTemplate:
     env:
 {{- $variables := list
+      "params.OPC_IMAGE"
       "params.SCRIPT"
       "workspaces.kubeconfig_dir.bound"
       "workspaces.kubeconfig_dir.path"
@@ -44,8 +48,8 @@ spec:
 {{- include "load_scripts" ( list . "opc-" ) | nindent 4 }}
 
     - name: opc
-      image: {{ .Values.images.opc }}
-      env:
+      image: "$(params.OPC_IMAGE)"
+      env: 
         - name: HOME
           value: /tekton/home
       command:

@@ -40,7 +40,7 @@ $(BIN):
 
 CATALOGCD = $(or ${CATALOGCD_BIN},${CATALOGCD_BIN},$(BIN)/catalog-cd)
 $(BIN)/catalog-cd: $(BIN)
-	curl -fsL https://github.com/openshift-pipelines/catalog-cd/releases/download/v0.1.0/catalog-cd_0.1.0_linux_x86_64.tar.gz | tar xzf - -C $(BIN) catalog-cd
+	curl -fsL https://github.com/openshift-pipelines/catalog-cd/releases/download/v0.2.2/catalog-cd_0.2.2_linux_x86_64.tar.gz | tar xzf - -C $(BIN) catalog-cd
 
 # renders the task resource file printing it out on the standard output, you can redirect the output
 # of this target to a `kubectl apply -f -`, for istance
