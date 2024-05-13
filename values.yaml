@@ -1,7 +1,7 @@
 ---
 images:
-  bash: registry.access.redhat.com/ubi8-minimal:latest
-  openshiftCli: registry.redhat.io/openshift4/ose-cli@sha256:3d5b31cc3fbf878015e5c3ed1d48379d74b15b77a1a823024a7a2b7cd5e2e86d
+  bash: registry.access.redhat.com/ubi9-minimal:latest
+  openshiftCli: registry.redhat.io/openshift4/ose-cli@sha256:4257542c6e7343abd048f8b1c1e06afeed8d4e4bfafe8621fcfa32b92c77b644
   kn: registry.redhat.io/openshift-serverless-1/client-kn-rhel8:1.11.2-4
 
 annotations:
