@@ -10,4 +10,4 @@ source "$(dirname ${BASH_SOURCE[0]})/tkn-common.sh"
 [[ -f ${WORKSPACES_KUBECONFIG_DIR_PATH}/kubeconfig ]] && \
 export KUBECONFIG=${WORKSPACES_KUBECONFIG_DIR_PATH}/kubeconfig
 
-${PARAMS_SCRIPT}
+eval ${PARAMS_SCRIPT}

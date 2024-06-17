@@ -20,6 +20,18 @@ source ./test/helper/helper.sh
 
     # waiting a few seconds before asserting results
     sleep 15
+
+    run kubectl delete taskrun --all
+    assert_success
+
+    run tkn task start tkn \
+        --use-param-defaults \
+        --skip-optional-workspace \
+        --showlog >&3
+    assert_success
+
+    # waiting a few seconds before asserting results
+    sleep 15
     
     # assering the taskrun status, making sure all steps have been successful
     declare tmpl_file="${BASE_DIR}/go-template.tpl"
