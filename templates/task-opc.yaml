@@ -41,15 +41,13 @@ spec:
 {{- include "environment" ( list $variables ) | nindent 6 }}
 
   steps:
-{{- include "load_scripts" ( list . "opc-" ) | nindent 4 }}
-
     - name: opc
       image: {{ .Values.images.opc }}
       env:
         - name: HOME
           value: /tekton/home
-      command:
-        - /scripts/opc-client.sh
+      script: |
+{{- include "load_scripts" ( list . ( list "opc-" ) ( list "/scripts/opc-client.sh" ) ) | nindent 8 }}
       args: ["$(params.ARGS)"]
       securityContext:
         runAsNonRoot: true

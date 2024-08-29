@@ -41,15 +41,13 @@ spec:
 {{- include "environment" ( list $variables ) | nindent 6 }}
 
   steps:
-{{- include "load_scripts" ( list . "tkn-" ) | nindent 4 }}
-
     - name: tkn
       image: {{ .Values.images.tkn }}
       env:
         - name: HOME
           value: /tekton/home
-      command:
-        - /scripts/tkn-client.sh
+      script: |
+{{- include "load_scripts" ( list . ( list "tkn-" ) ( list "/scripts/tkn-client.sh" ) ) | nindent 8 }}
       args: ["$(params.ARGS)"]
       securityContext:
         runAsNonRoot: true

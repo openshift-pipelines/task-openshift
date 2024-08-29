@@ -51,15 +51,13 @@ spec:
 {{- include "environment" ( list $variables ) | nindent 6 }}
 
   steps:
-{{- include "load_scripts" ( list . "oc-" ) | nindent 4 }}
-
     - name: oc
       image: {{ .Values.images.openshiftCli }}
       env:
         - name: HOME
           value: /tekton/home
-      command:
-        - /scripts/oc-client.sh
+      script: |
+{{- include "load_scripts" ( list . ( list "oc-" ) ( list "/scripts/oc-client.sh" ) ) | nindent 8 }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
