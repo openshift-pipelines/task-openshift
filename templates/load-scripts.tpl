@@ -10,7 +10,6 @@ set -e
 {{- range $i, $prefix := index . 1 -}}
   {{- range $path, $content := $global.Files.Glob "scripts/*.sh" }}
     {{- $name := trimPrefix "scripts/" $path }}
-echo "/scripts/{{ $name }}"
     {{- if or ( hasPrefix $prefix $name ) ( hasPrefix "common" $name ) }}
 printf '%s' "{{ $content | toString | b64enc }}" |base64 -d >"/scripts/{{ $name }}"
     {{- end }}
