@@ -9,4 +9,8 @@
 /LICENSE
 /Makefile
 /OWNERS
+/.bin/
 /test/
+/hack/
+/ci/
+/automation/
